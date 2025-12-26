@@ -57,3 +57,5 @@ CONFIG_BT=y
 CONFIG_BT_HS=n
 CONFIG_BT_LE=y
 CONFIG_RFKILL=y
+CONFIG_CMDLINE="" # it will be overwritten by the uboot-*/include/configs/legoev3.h
+CONFIG_CMDLINE_FROM_BOOTLOADER=y
