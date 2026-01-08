@@ -1,0 +1,248 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Minimal Device tree for LEGO MINDSTORMS EV3 - for boot debugging
+ */
+
+/dts-v1/;
+#include <dt-bindings/gpio/gpio.h>
+#include "da850.dtsi"
+
+/ {
+	compatible = "lego,ev3", "ti,da850";
+	model = "LEGO MINDSTORMS EV3 (Minimal)";
+
+	aliases {
+		serial1 = &serial1;
+	};
+
+	memory@c0000000 {
+		device_type = "memory";
+		reg = <0xc0000000 0x04000000>;
+	};
+
+	chosen {
+		stdout-path = "serial1:115200n8";
+	};
+};
+
+&ref_clk {
+	clock-frequency = <24000000>;
+};
+
+&cpu {
+	/* Remove cpu-supply to avoid regulator dependency */
+};
+
+/* Disable problematic OPP entries */
+&opp_100 {
+	status = "disabled";
+};
+
+&opp_200 {
+	status = "disabled";
+};
+
+&opp_375 {
+	status = "disabled";
+};
+&pmx_core {
+	pinctrl-0 = <&fixed_pins>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	ev3_lcd_pins: lcd-pins {
+		pinctrl-single,bits = <
+			/* SIMO, CLK */
+			0x14 0x00100100 0x00f00f00
+		>;
+	};
+
+	fixed_pins: pinmux-fixed {
+		pinctrl-single,bits = <
+			/*
+			 * AHCLKX, AHCLKR
+			 */
+			0x00 0x00110000 0x00ff0000
+			/*
+			 * GP2[0]
+			 */
+			0x18 0x80000000 0xf0000000
+			/*
+			 * GP5[2]
+			 */
+			0x30 0x00800000 0x00f00000
+			/*
+			 * RTCK, GP6[2]
+			 */
+			0x4c 0x00080000 0xf00f0000
+		>;
+	};
+	in1_pins: pinmux-in1 {
+		pinctrl-single,bits = <
+			/* UART1_RXD */
+			0x10 0x02000000 0x0f000000
+		>;
+	};
+
+	in1_uart_pins: pinmux-in1-uart {
+		pinctrl-single,bits = <
+			/* UART1_TXD */
+			0x10 0x20000000 0xf0000000
+		>;
+	};
+
+	in1_i2c_pins: pinmux-in1-i2c {
+		pinctrl-single,bits = <
+			/* GP1[0] */
+			0x10 0x80000000 0xf0000000
+		>;
+	};
+
+	in2_pins: pinmux-in2 {
+		pinctrl-single,bits = <
+			/* UART0_RXD */
+			0x0c 0x00020000 0x000f0000
+		>;
+	};
+
+	in2_uart_pins: pinmux-in2-uart {
+		pinctrl-single,bits = <
+			/* UART0_TXD */
+			0x0c 0x00200000 0x00f00000
+		>;
+	};
+
+	in2_i2c_pins: pinmux-in2-i2c {
+		pinctrl-single,bits = <
+			/* GP8[3] */
+			0x0c 0x00400000 0x00f00000
+		>;
+	};
+
+	in3_pins: pinmux-in3 {
+		pinctrl-single,bits = <
+			/* AXR2 */
+			0x08 0x00100000 0x00f00000
+		>;
+	};
+
+	in3_uart_pins: pinmux-in3-uart {
+		pinctrl-single,bits = <
+			/* AXR4 */
+			0x08 0x00001000 0x0000f000
+		>;
+	};
+
+	in3_i2c_pins: pinmux-in3-i2c {
+		pinctrl-single,bits = <
+			/* GP1[12] */
+			0x08 0x00004000 0x0000f000
+		>;
+	};
+
+	in4_pins: pinmux-in4 {
+		pinctrl-single,bits = <
+			/* AXR1 */
+			0x08 0x01000000 0x0f000000
+		>;
+	};
+
+	in4_uart_pins: pinmux-in4-uart {
+		pinctrl-single,bits = <
+			/* AXR3 */
+			0x08 0x00010000 0x000f0000
+		>;
+	};
+
+	in4_i2c_pins: pinmux-in4-i2c {
+		pinctrl-single,bits = <
+			/* GP1[11] */
+			0x08 0x00040000 0x000f0000
+		>;
+	};
+};
+
+&pinconf {
+	status = "okay";
+};
+
+/* Serial console - Input port 1 */
+&serial1 {
+	status = "okay";
+};
+
+/* CRITICAL: Enable MMC for SD card access */
+&mmc0 {
+	status = "okay";
+	max-frequency = <50000000>;
+	bus-width = <4>;
+	cd-gpios = <&gpio 94 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&mmc0_pins>;
+};
+
+/* GPIO needed by MMC for card detect */
+&gpio {
+	status = "okay";
+};
+
+/* Disable everything else */
+&serial0 {
+	status = "disabled";
+};
+
+&serial2 {
+	status = "disabled";
+};
+
+&rtc0 {
+	status = "disabled";
+};
+
+&i2c0 {
+	status = "disabled";
+};
+
+&wdt {
+	status = "disabled";
+};
+
+&spi0 {
+	status = "disabled";
+};
+
+&spi1 {
+	status = "disabled";
+};
+
+&ecap0 {
+	status = "disabled";
+};
+
+&ecap1 {
+	status = "disabled";
+};
+
+&ecap2 {
+	status = "disabled";
+};
+
+&ehrpwm0 {
+	status = "disabled";
+};
+
+&ehrpwm1 {
+	status = "disabled";
+};
+
+&usb_phy {
+	status = "disabled";
+};
+
+&usb0 {
+	status = "disabled";
+};
+
+&usb1 {
+	status = "disabled";
+};
