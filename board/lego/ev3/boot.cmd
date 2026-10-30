@@ -13,10 +13,20 @@
 # `make host-uboot-tools-rebuild`
 #
 
-setenv ubootaddr 0xc10c0000
-setenv loaduboot fatload mmc 0 ${ubootaddr} u-boot.bin
 
-# try to run u-boot.bin from MMC if present
-if run loaduboot; then
-    go ${ubootaddr}
+if test "${ver}" = "U-Boot 2009.11 (Oct 26 2012 - 10:30:38)"; then
+    echo "Old U-Boot detected, chain-loading 2026"
+    setenv ubootaddr 0xc10c0000
+    setenv loaduboot fatload mmc 0 ${ubootaddr} u-boot.bin
+    if run loaduboot; then
+        go ${ubootaddr}
+    fi
+else
+    echo "U-Boot 2026.10 detected, booting kernel"
+
+    fatload mmc 0:1 0xC0007FC0 uImage
+    fatload mmc 0:1 0xC0800000 da850-lego-ev3.dtb
+    bootm 0xC0007FC0 - 0xC0800000
+
+
 fi
